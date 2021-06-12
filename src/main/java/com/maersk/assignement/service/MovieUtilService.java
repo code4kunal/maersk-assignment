@@ -11,9 +11,13 @@ public class MovieUtilService {
      * @param year
      */
     public static void validateYears(String year) {
-        Integer yearAsInt  = Integer.parseInt(year);
-        if(yearAsInt <=0 || yearAsInt > LocalDateTime.now().getYear()){
-            throw new BadRequestException("Invalid year : " +year, HttpStatus.BAD_REQUEST);
+        try {
+            Integer yearAsInt = Integer.parseInt(year);
+            if (yearAsInt <= 0 || yearAsInt > LocalDateTime.now().getYear()) {
+                throw new BadRequestException("Invalid year : " + year, HttpStatus.BAD_REQUEST);
+            }
+        } catch(Exception ex){
+            throw new BadRequestException("Invalid year : " + year, HttpStatus.BAD_REQUEST);
         }
     }
 

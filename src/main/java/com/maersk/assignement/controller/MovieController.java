@@ -23,20 +23,18 @@ public class MovieController {
 
     @ApiOperation(value = "create new movie record")
     @PostMapping("/movie")
-    public ResponseEntity<Object> createCompany(@Valid @RequestBody NewMovie addMovieRequest,
-                                                HttpServletRequest httpServletRequest){
+    public ResponseEntity<Object> createCompany(@Valid @RequestBody NewMovie addMovieRequest){
 
-        MovieEntity newMovie = movieService.createMovie(addMovieRequest, httpServletRequest);
+        MovieEntity newMovie = movieService.createMovie(addMovieRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(newMovie);
     }
 
     @ApiOperation(value = "update existing movie record")
     @PutMapping("/movie/{movieID}")
     public ResponseEntity<Object> updateUser(@PathVariable(value = "movieID") Long movieID,
-                                             @Valid @RequestBody NewMovie addUserRequest,
-                                             HttpServletRequest httpServletRequest){
+                                             @Valid @RequestBody NewMovie addUserRequest){
 
-        MovieEntity updatedMovie = movieService.updateUser(Math.toIntExact(movieID), addUserRequest, httpServletRequest);
+        MovieEntity updatedMovie = movieService.updateUser(Math.toIntExact(movieID), addUserRequest);
         return ResponseEntity.ok(updatedMovie);
     }
 

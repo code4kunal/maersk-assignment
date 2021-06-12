@@ -1,79 +1,129 @@
 package com.maersk.assignement.service;
 
+import com.maersk.assignement.exception.BadRequestException;
+import com.maersk.assignement.persistence.POJO.NewMovie;
 import com.maersk.assignement.persistence.dao.MovieDAO;
 import com.maersk.assignement.persistence.entity.MovieEntity;
+import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Rule;
+import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-class MovieServiceTest {
+public class MovieServiceTest {
 
     @Mock
     private MovieDAO movieDAO;
 
-    @Mock
-    private MovieEntity shoppingCartEntity;
-
-    @MockBean
+    @InjectMocks
     private MovieService movieService;
 
     @Rule
     public ExpectedException exceptionRule = ExpectedException.none();
 
-    //@Test
-//    public void createProduct_validProductName_createdSuccessfully(){
-//        NewMovie newNewMovie = NewMovie.builder()
-//                .type(ProductType.MOBILE.toString())
-//                .quantity(5)
-//                .perUnitPrice(BigDecimal.valueOf(15250)).build();
-//       MovieEntity expected =
-//               MovieEntity.builder().productId(Long.valueOf(1)).
-//                       price(BigDecimal.valueOf(15250))
-//                       .type(ProductType.MOBILE).quantity(5).build();
-//
-//       Mockito.when(movieDAO.save(any())).thenReturn(expected);
-//       shoppingCartService.createProduct(newNewMovie);
-//       Assert.assertEquals(ProductType.MOBILE, expected.getType());
-//    }
-//
-//    @Test
-//    public void createProduct_invalidOrEmptyProductType_throwException(){
-//
-//        NewMovie newNewMovie = NewMovie.builder()
-//                .type(null)
-//                .quantity(5)
-//                .perUnitPrice(BigDecimal.valueOf(15250)).build();
-//        exceptionRule.expect(ShoppingCartApplicationException.class);
-//        shoppingCartService.createProduct(newNewMovie);
-//    }
-//
-//    @Test
-//    public void createProduct_invalidOrEmptyQuantity_throwException(){
-//        NewMovie newNewMovie = NewMovie.builder()
-//                .type(ProductType.MOBILE.toString())
-//                .quantity(-1)
-//                .perUnitPrice(BigDecimal.valueOf(15250)).build();
-//        exceptionRule.expect(ShoppingCartApplicationException.class);
-//        shoppingCartService.createProduct(newNewMovie);
-//    }
-//
-//    @Test
-//    public void createProduct_invalidOrEmptyPrice_throwException(){
-//        NewMovie newNewMovie = NewMovie.builder()
-//                .type(ProductType.MOBILE.toString())
-//                .quantity(1)
-//                .perUnitPrice(BigDecimal.valueOf(-222)).build();
-//        exceptionRule.expect(ShoppingCartApplicationException.class);
-//        shoppingCartService.createProduct(newNewMovie);
-//
-//    }
-//
-//
+    @Before
+    public void setUp() {
+        MockitoAnnotations.initMocks(this);
+    }
+
+    @Test
+    public void givenCreateMovieRecord_whenValidRequest_thenSaveAndReturnEntity(){
+
+       NewMovie newMovie =  NewMovie.builder()
+               .name("DDLJ")
+               .rating("HIT")
+               .year("1999")
+               .build();
+       MovieEntity expected = MovieEntity.builder()
+                .name("DDLJ")
+                .rating("HIT")
+                .year("1999")
+                .build();
+       Mockito.when(movieDAO.save(any())).thenReturn(expected);
+       MovieEntity actual = movieService.createMovie(newMovie);
+       Assert.assertEquals(expected.getName(), actual.getName());
+    }
+
+    @Test
+    public void givenCreateMovieRecord_wheninValidRating_thenThrowException(){
+
+        NewMovie newMovie =  NewMovie.builder()
+                .name("DDLJ")
+                .rating("BLOCK")
+                .year("1999")
+                .build();
+        MovieEntity expected = MovieEntity.builder()
+                .build();
+        Mockito.when(movieDAO.save(any())).thenReturn(expected);
+        exceptionRule.expect(BadRequestException.class);
+
+        MovieEntity actual = movieService.createMovie(newMovie);
+
+    }
+
+    @Test
+    public void givenCreateMovieRecord_wheninValidYear_thenThrowException(){
+
+        NewMovie newMovie =  NewMovie.builder()
+                .name("DDLJ")
+                .rating("BLOCK")
+                .year("2048")
+                .build();
+        MovieEntity expected = MovieEntity.builder()
+                .build();
+        Mockito.when(movieDAO.save(any())).thenReturn(expected);
+        exceptionRule.expect(BadRequestException.class);
+
+        MovieEntity actual = movieService.createMovie(newMovie);
+
+    }
+
+    @Test
+    public void givenCreateMovieRecord_whenEmptyYearAndRating_thenThrowException(){
+
+        NewMovie newMovie =  NewMovie.builder()
+                .name("DDLJ")
+                .rating("")
+                .year("")
+                .build();
+        MovieEntity expected = MovieEntity.builder()
+                .build();
+        Mockito.when(movieDAO.save(any())).thenReturn(expected);
+        exceptionRule.expect(BadRequestException.class);
+
+        MovieEntity actual = movieService.createMovie(newMovie);
+
+    }
+
+    @Test
+    public void givenUpdateMovieRecord_whenValidRequest_thenUpdateAndReturnEntity(){
+
+        NewMovie updateMovie =  NewMovie.builder()
+                .name("DDLJ")
+                .rating("HIT")
+                .year("1999")
+                .build();
+        MovieEntity expected = MovieEntity.builder()
+                .name("DDLJ")
+                .rating("HIT")
+                .year("1999")
+                .build();
+        MovieEntity existing = MovieEntity.builder()
+                .name("MMNK")
+                .rating("FLOP")
+                .year("2019")
+                .build();
+        Mockito.when(movieDAO.findById(any())).thenReturn(java.util.Optional.ofNullable(existing));
+        Mockito.when(movieDAO.save(any())).thenReturn(expected);
+        MovieEntity actual = movieService.createMovie(updateMovie);
+        Assert.assertEquals(expected.getName(), actual.getName());
+    }
 }

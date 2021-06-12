@@ -10,7 +10,6 @@ import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @Service
@@ -22,10 +21,9 @@ public class MovieService {
     /**
      * Method to create new movie record based on user inputs
      * @param addMovie
-     * @param httpServletRequest
      * @return
      */
-    public MovieEntity createMovie(NewMovie addMovie, HttpServletRequest httpServletRequest) {
+    public MovieEntity createMovie(NewMovie addMovie) {
         MovieUtilService.validateYears(addMovie.getYear());
         MovieUtilService.validateRatings(addMovie.getRating());
         MovieEntity movieEntity = MovieEntity.builder()
@@ -40,10 +38,9 @@ public class MovieService {
      * Method to update existing movie records based on user inputs
      * @param movieID
      * @param updateMovie
-     * @param httpServletRequest
      * @return
      */
-    public MovieEntity updateUser(Integer movieID, NewMovie updateMovie, HttpServletRequest httpServletRequest) {
+    public MovieEntity updateUser(Integer movieID, NewMovie updateMovie) {
         MovieEntity movieEntity = movieDAO.findById(movieID)
                 .orElseThrow(() -> new ResourceNotFoundException("Movie not found for id : " +movieID,
                         HttpStatus.NOT_FOUND));
