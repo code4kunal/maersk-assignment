@@ -19,6 +19,12 @@ public class MovieService {
     @Autowired
     private MovieDAO movieDAO;
 
+    /**
+     * Method to create new movie record based on user inputs
+     * @param addMovie
+     * @param httpServletRequest
+     * @return
+     */
     public MovieEntity createMovie(NewMovie addMovie, HttpServletRequest httpServletRequest) {
         MovieUtilService.validateYears(addMovie.getYear());
         MovieUtilService.validateRatings(addMovie.getRating());
@@ -30,6 +36,13 @@ public class MovieService {
         return movieDAO.save(movieEntity);
     }
 
+    /**
+     * Method to update existing movie records based on user inputs
+     * @param movieID
+     * @param updateMovie
+     * @param httpServletRequest
+     * @return
+     */
     public MovieEntity updateUser(Integer movieID, NewMovie updateMovie, HttpServletRequest httpServletRequest) {
         MovieEntity movieEntity = movieDAO.findById(movieID)
                 .orElseThrow(() -> new ResourceNotFoundException("Movie not found for id : " +movieID,
@@ -44,6 +57,13 @@ public class MovieService {
         return movieDAO.save(movieEntity);
     }
 
+    /**
+     *  Method to fetch movie records based on input parameters like rating
+     *  and year. If both are not supplied all records are returned.
+     * @param rating
+     * @param year
+     * @return
+     */
     public List<MovieEntity> getMovies(String rating, String year) {
 
         if(rating==null && year ==null){

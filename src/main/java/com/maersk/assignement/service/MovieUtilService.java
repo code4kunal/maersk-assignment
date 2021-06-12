@@ -6,7 +6,10 @@ import org.springframework.http.HttpStatus;
 import java.time.LocalDateTime;
 
 public class MovieUtilService {
-
+    /**
+     * Method to Validate year while creating/updating movie record.
+     * @param year
+     */
     public static void validateYears(String year) {
         Integer yearAsInt  = Integer.parseInt(year);
         if(yearAsInt <=0 || yearAsInt > LocalDateTime.now().getYear()){
@@ -14,6 +17,11 @@ public class MovieUtilService {
         }
     }
 
+    /**
+     *  Method to validate ratings value, ratings have strict value
+     *  specified in movierating enum.
+     * @param rating
+     */
     public static void validateRatings(String rating) {
         try {
             MovieRating.valueOf(rating);
