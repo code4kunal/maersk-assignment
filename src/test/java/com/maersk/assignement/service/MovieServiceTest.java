@@ -14,7 +14,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.springframework.data.domain.Example;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.mockito.ArgumentMatchers.any;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -125,5 +130,39 @@ public class MovieServiceTest {
         Mockito.when(movieDAO.save(any())).thenReturn(expected);
         MovieEntity actual = movieService.createMovie(updateMovie);
         Assert.assertEquals(expected.getName(), actual.getName());
+    }
+
+    @Test
+    public void givenFetchMovieRecord_whenRatingAndYearEmpty_thenReturnAllRecords(){
+        List<MovieEntity> movieEntities = new ArrayList<>();
+        MovieEntity first = MovieEntity.builder()
+                .name("DDLJ")
+                .rating("HIT")
+                .year("1999")
+                .build();
+        MovieEntity second = MovieEntity.builder()
+                .name("MMNK")
+                .rating("FLOP")
+                .year("2019")
+                .build();
+        movieEntities.add(first);
+        movieEntities.add(second);
+        Mockito.when(movieDAO.findAll()).thenReturn(movieEntities);
+        List<MovieEntity> actual = movieService.getMovies(null, null);
+        Assert.assertEquals(2, actual.size());
+    }
+
+    @Test
+    public void givenFetchMovieRecord_whenRatingAndYearIsNotEmpty_thenReturnSElectedRecords(){
+        List<MovieEntity> movieEntities = new ArrayList<>();
+        MovieEntity first = MovieEntity.builder()
+                .name("DDLJ")
+                .rating("HIT")
+                .year("1999")
+                .build();
+        movieEntities.add(first);
+        Mockito.when(movieDAO.findAll((Example<MovieEntity>) any())).thenReturn(movieEntities);
+        List<MovieEntity> actual = movieService.getMovies("HIT", "1999");
+        Assert.assertEquals(1, actual.size());
     }
 }
